@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  description: |
+    This API receives buy and sell stock orders from retail and institutional investors.
+  version: "1.0.0"
+  title: Stock API
+  contact:
+    email: mjacinto3@bcit.ca
+tags:
+  - name: stocks
+    description: Stocks available to investors.
+paths:
+  /orders/buy:
+    post:
+      tags:
+        - stocks
+      summary: place a stock buy order
+      operationId: app.place_stock_buy_order
+      responses:
+        "201":
+          description: Buy order created
+        "400":
+          description: "invalid input, object invalid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyOrder"
+        description: Stock buy order to create
+
+  /orders/sell:
+    post:
+      tags:
+        - stocks
+      summary: place a stock sell order
+      operationId: app.place_stock_sell_order
+      responses:
+        "201":
+          description: Sell order created
+        "400":
+          description: "invalid input, object invalid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellOrder"
+        description: Stock sell order to create
+
+components:
+  schemas:
+    BuyOrder:
+      required:
+        - investor_id
+        - stock_id
+        - quantity
+        - bid_price
+        - timestamp
+      properties:
+        investor_id:
+          type: string
+          format: uuid
+          example: b4086dac-0ffe-11ec-82a8-0242ac130003
+        stock_id:
+          type: string
+          example: TSLA
+        quantity:
+          type: integer
+          format: int32
+          example: 100
+        bid_price:
+          type: number
+          format: double
+          example: 100.04
+        timestamp:
+          type: string
+          format: date-time
+          example: "2021-08-12T20:17:46"
+      type: object
+
+    SellOrder:
+      required:
+        - investor_id
+        - stock_id
+        - quantity
+        - ask_price
+        - timestamp
+      properties:
+        investor_id:
+          type: string
+          format: uuid
+          example: b4086dac-0ffe-11ec-82a8-0242ac130003
+        stock_id:
+          type: string
+          example: AAPL
+        quantity:
+          type: integer
+          format: int32
+          example: 300
+        ask_price:
+          type: number
+          format: double
+          example: 100.44
+        timestamp:
+          type: string
+          format: date-time
+          example: "2021-08-12T20:17:46"
+      type: object
