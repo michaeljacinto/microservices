@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  description: This API receives buy and sell stock orders from retail and institutional investors.
+  version: "1.0.0"
+  title: Stock API
+  contact:
+    email: mjacinto3@bcit.ca
+tags:
+  - name: stocks
+    description: Stocks available to investors.
+paths:
+  /stats:
+    get:
+      summary: Gets all stock order stats
+      operationId: app.get_stats
+      description: Gets Stock Sell Orders and Stock Buy Orders stats
+      responses:
+        "200":
+          description: Successfully returned a list of stock order stats
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/StockOrderStats"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    StockOrderStats:
+      required:
+        - num_stock_sell_orders
+        - max_stock_sell_qty
+        - min_stock_ask_price
+        - num_stock_buy_orders
+        - max_stock_buy_qty
+        - min_stock_bid_price
+      properties:
+        num_stock_sell_orders:
+          type: integer
+          example: 10000
+        max_stock_sell_qty:
+          type: integer
+          example: 12000
+        min_stock_ask_price:
+          type: number
+          format: double
+          example: 150.20
+        num_stock_buy_orders:
+          type: integer
+          example: 10000
+        max_stock_buy_qty:
+          type: integer
+          example: 12000
+        min_stock_bid_price:
+          type: number
+          format: double
+          example: 193.53
+      type: object
