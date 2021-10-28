@@ -1,7 +1,7 @@
-from base import Base
 import connexion
 from connexion import NoContent
-import datetime
+# import datetime
+from datetime import datetime
 import os
 import json
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -19,6 +19,7 @@ with open('log_conf.yml', 'r') as f:
 
 logger = logging.getLogger('basicLogger')
 json_file = app_config['datastore']['filename']
+
 
 def get_stats():
     """ Retrieve stock order stats """
@@ -66,7 +67,8 @@ def populate_stats():
 
     current_stats = current_stats[0]
 
-    last_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S").replace(":", "%3A")
+    last_datetime = datetime.now().strftime(
+        "%Y-%m-%dT%H:%M:%S").replace(":", "%3A")
 
     buy_orders = requests.get(
         f'{app_config["eventstore"]["url"]}/orders/buy?timestamp={last_datetime}').json()
@@ -84,7 +86,7 @@ def populate_stats():
         "num_stock_buy_orders": current_stats['num_stock_buy_orders'] + count_buy_orders,
         "max_stock_buy_qty": get_max_value(buy_orders, current_stats, 'quantity', 'max_stock_buy_qty'),
         "min_stock_bid_price": get_min_value(buy_orders, current_stats, 'bid_price', 'min_stock_bid_price'),
-        "last_updated": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     }
 
     # Write updated stats to json file
@@ -95,7 +97,6 @@ def populate_stats():
         logger.info(
             f'Total Events received from GET request: {total_events}')
         logger.debug(updated_stats)
-
 
 
 def get_max_value(order_list, stats, order_list_key, stats_key):
@@ -143,4 +144,3 @@ if __name__ == "__main__":
     # Run our standalone gevent server
     init_scheduler()
     app.run(port=8100, use_reloader=False)
-
