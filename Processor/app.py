@@ -2,6 +2,7 @@ import connexion
 from connexion import NoContent
 # import datetime
 from datetime import datetime
+from datetime import timedelta
 import os
 import json
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -67,14 +68,19 @@ def populate_stats():
 
     current_stats = current_stats[0]
 
-    last_datetime = datetime.now().strftime(
-        "%Y-%m-%dT%H:%M:%S").replace(":", "%3A")
+    current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
-    buy_orders = requests.get(
-        f'{app_config["eventstore"]["url"]}/orders/buy?timestamp={last_datetime}').json()
+    buy_orders = requests.get(app_config["buy"]["url"],
+                              params={
+        "start_timestamp": current_stats['last_updated'],
+        "end_timestamp": current_datetime
+    }).json()
 
-    sell_orders = requests.get(
-        f'{app_config["eventstore"]["url"]}/orders/sell?timestamp={last_datetime}').json()
+    sell_orders = requests.get(app_config["sell"]["url"],
+                               params={
+        "start_timestamp": current_stats['last_updated'],
+        "end_timestamp": current_datetime
+    }).json()
 
     count_sell_orders = len(sell_orders)
     count_buy_orders = len(buy_orders)
@@ -86,7 +92,7 @@ def populate_stats():
         "num_stock_buy_orders": current_stats['num_stock_buy_orders'] + count_buy_orders,
         "max_stock_buy_qty": get_max_value(buy_orders, current_stats, 'quantity', 'max_stock_buy_qty'),
         "min_stock_bid_price": get_min_value(buy_orders, current_stats, 'bid_price', 'min_stock_bid_price'),
-        "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        "last_updated": current_datetime
     }
 
     # Write updated stats to json file

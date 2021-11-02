@@ -31,15 +31,22 @@ paths:
         - stocks
       summary: gets stock buy orders
       operationId: app.get_stock_buy_orders
-      description: Gets stock buy orders after a requested timestamp
+      description: Gets stock buy orders in between 2 times
       parameters:
-        - name: timestamp
+        - name: start_timestamp
           in: query
-          description: Limits the number of items on a page
+          description: Start timestamp of buy orders
           schema:
             type: string
             format: date-time
             example: "2016-08-29T09:12:33"
+        - name: end_timestamp
+          in: query
+          description: End timestamp of buy orders
+          schema:
+            type: string
+            format: date-time
+            example: "2016-09-29T09:12:33"
       responses:
         "200":
           description: Successfully returned a list of buy order events.
@@ -80,15 +87,22 @@ paths:
         - stocks
       summary: gets stock sell orders
       operationId: app.get_stock_sell_orders
-      description: Gets stock sell orders after a requested timestamp
+      description: Gets stock sell orders in between 2 times
       parameters:
-        - name: timestamp
+        - name: start_timestamp
           in: query
-          description: Limits the number of items on a page
+          description: Start timestamp of sell orders
           schema:
             type: string
             format: date-time
             example: "2016-08-29T09:12:33"
+        - name: end_timestamp
+          in: query
+          description: End timestamp of sell orders
+          schema:
+            type: string
+            format: date-time
+            example: "2016-09-29T09:12:33"
       responses:
         "200":
           description: Successfully returned a list of sell order events.

@@ -5,3 +5,7 @@ scheduler:
   period_sec: 5
 eventstore:
   url: http://localhost:8090
+buy:
+  url: http://localhost:8090/orders/buy
+sell:
+  url: http://localhost:8090/orders/sell
