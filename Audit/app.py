@@ -1,5 +1,6 @@
 import connexion
 from connexion import NoContent
+from flask_cors import CORS, cross_origin
 import logging.config
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
@@ -96,6 +97,8 @@ def get_stock_buy_order(index):
     return { "message": "Not Found"}, 404 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+CORS(app.app) 
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yaml",
             strict_validation=True,
             validate_responses=True)
