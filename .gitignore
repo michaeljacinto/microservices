@@ -126,6 +126,5 @@ dmypy.json
 
 *.pdf
 *.zip
-*.png
 *.code-workspace
 data.json
