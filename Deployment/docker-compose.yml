@@ -55,12 +55,9 @@ services:
       - "db"
   processing:
     image: processing
-    ports:
-      - "8100:8100"
     depends_on:
       - "storage"
-    network: 
-      - "host"
+    network_mode: "host"
   audit:
     image: audit
     ports:
