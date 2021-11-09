@@ -139,15 +139,12 @@ def process_messages():
             logger.info(f'Attempting to connect to reconnect to Kafka. Attempt {retry_count}..')
             client = KafkaClient(hosts=hostname)
             topic = client.topics[str.encode(app_config["events"]["topic"])]
-
+            break
+            
         except Exception as e:
             logger.error(f'Connection failed. Unable to connect to Kafka..')
             time.sleep(app_config["sleep_time"])
             retry_count += 1
-
-        else:
-            logger.info("Connection to Kafka established.")
-            retry_count = app_config["max_retries"] + 1
 
     # Create a consume on a consumer group, that only reads new messages
     # (uncommitted messages) when the service re-starts (i.e., it doesn't
