@@ -19,30 +19,29 @@ with open('log_conf.yml', 'r') as f:
 logger = logging.getLogger('basicLogger')
 topic = None
 
-def establish_kafka_connection():
-    """ Establish connection to Kafka """
+# def establish_kafka_connection():
+""" Establish connection to Kafka """
 
-    hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
+hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
 
-    retry_count = 1
-    # global topic
+retry_count = 1
 
-    while retry_count <= app_config["max_retries"]:
+while retry_count <= app_config["max_retries"]:
 
-        try:
-            logger.info(f'Attempting to connect to Kafka. Attempt {retry_count}..')
-            client = KafkaClient(hosts=hostname)
-            topic = client.topics[str.encode(app_config["events"]["topic"])]
+    try:
+        logger.info(f'Attempting to connect to Kafka. Attempt {retry_count}..')
+        client = KafkaClient(hosts=hostname)
+        topic = client.topics[str.encode(app_config["events"]["topic"])]
 
-        except Exception as e:
-            logger.error(f'Connection failed. Unable to connect to Kafka..')
-            time.sleep(app_config["sleep_time"])
-            retry_count += 1
+    except Exception as e:
+        logger.error(f'Connection failed. Unable to connect to Kafka..')
+        time.sleep(app_config["sleep_time"])
+        retry_count += 1
 
-        else:
-            logger.info("Connection to Kafka established.")
-            retry_count = app_config["max_retries"] + 1
-            return topic
+    else:
+        logger.info("Connection to Kafka established.")
+        retry_count = app_config["max_retries"] + 1
+
 
 def place_stock_sell_order(body):
     """ Places stock sell order event """
@@ -94,5 +93,26 @@ app.add_api("openapi.yaml",
 
 
 if __name__ == "__main__":
-    topic = establish_kafka_connection()
+    # establish_kafka_connection()
+    # hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
+
+    # retry_count = 1
+    # # global topic
+
+    # while retry_count <= app_config["max_retries"]:
+
+    #     try:
+    #         logger.info(f'Attempting to connect to Kafka. Attempt {retry_count}..')
+    #         client = KafkaClient(hosts=hostname)
+    #         topic = client.topics[str.encode(app_config["events"]["topic"])]
+
+    #     except Exception as e:
+    #         logger.error(f'Connection failed. Unable to connect to Kafka..')
+    #         time.sleep(app_config["sleep_time"])
+    #         retry_count += 1
+
+    #     else:
+    #         logger.info("Connection to Kafka established.")
+    #         retry_count = app_config["max_retries"] + 1
+
     app.run(port=8080)
