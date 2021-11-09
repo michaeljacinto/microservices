@@ -32,6 +32,7 @@ while retry_count <= app_config["max_retries"]:
         logger.info(f'Attempting to connect to Kafka. Attempt {retry_count}..')
         client = KafkaClient(hosts=hostname)
         topic = client.topics[str.encode(app_config["events"]["topic"])]
+        producer = topic.get_sync_producer()
 
     except Exception as e:
         logger.error(f'Connection failed. Unable to connect to Kafka..')
@@ -49,7 +50,7 @@ def place_stock_sell_order(body):
     receipt_message = f'Received event SELL ORDER request with a unique id of {body["investor_id"]}'
     logger.info(receipt_message)
     
-    producer = topic.get_sync_producer()
+    # producer = topic.get_sync_producer()
 
     msg = { "type": "sell",
             "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -70,7 +71,7 @@ def place_stock_buy_order(body):
     receipt_message = f'Received event BUY ORDER request with a unique id of {body["investor_id"]}'
     logger.info(receipt_message)
 
-    producer = topic.get_sync_producer()
+    # producer = topic.get_sync_producer()
 
     msg = { "type": "buy",
             "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
