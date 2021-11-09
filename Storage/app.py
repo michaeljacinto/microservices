@@ -13,6 +13,7 @@ from sqlalchemy import and_
 from stock_buy_order import StockBuyOrder
 from stock_sell_order import StockSellOrder
 from threading import Thread
+import time
 import yaml
 
 with open('app_conf.yml', 'r') as f:
@@ -130,8 +131,22 @@ def process_messages():
     hostname = "%s:%d" % (app_config["events"]["hostname"],
                           app_config["events"]["port"])
 
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    retry_count = 1
+
+    while retry_count <= app_config["max_retries"]:
+
+        try:
+            logger.info(f'Attempting to connect to reconnect to Kafka. Attempt {retry_count}..')
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config["events"]["topic"])]
+
+        except Exception as e:
+            logger.error(f'Connection failed. Unable to connect to Kafka..')
+            time.sleep(app_config["sleep_time"])
+            retry_count += 1
+
+        else:
+            retry_count = app_config["max_retries"] + 1
 
     # Create a consume on a consumer group, that only reads new messages
     # (uncommitted messages) when the service re-starts (i.e., it doesn't

@@ -7,3 +7,5 @@ events:
   hostname: michaeljacinto.westus2.cloudapp.azure.com
   port: 9092
   topic: events
+max_retries: 25
+sleep_time: 5
