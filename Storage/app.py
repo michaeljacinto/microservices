@@ -146,6 +146,7 @@ def process_messages():
             retry_count += 1
 
         else:
+            logger.info("Connection to Kafka established.")
             retry_count = app_config["max_retries"] + 1
 
     # Create a consume on a consumer group, that only reads new messages

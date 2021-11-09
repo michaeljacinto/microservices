@@ -17,6 +17,7 @@ with open('log_conf.yml', 'r') as f:
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger('basicLogger')
+topic = None
 
 def establish_kafka_connection():
     """ Establish connection to Kafka """
@@ -24,7 +25,7 @@ def establish_kafka_connection():
     hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
 
     retry_count = 1
-    global topic
+    # global topic
 
     while retry_count <= app_config["max_retries"]:
 
@@ -39,8 +40,9 @@ def establish_kafka_connection():
             retry_count += 1
 
         else:
+            logger.info("Connection to Kafka established.")
             retry_count = app_config["max_retries"] + 1
-
+            return topic
 
 def place_stock_sell_order(body):
     """ Places stock sell order event """
@@ -92,5 +94,5 @@ app.add_api("openapi.yaml",
 
 
 if __name__ == "__main__":
-    establish_kafka_connection()
+    topic = establish_kafka_connection()
     app.run(port=8080)
