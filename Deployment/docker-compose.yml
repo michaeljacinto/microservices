@@ -97,7 +97,7 @@ services:
     depends_on:
       - "processing"
       - "audit"
-# Names our volume
+# Volumes
 volumes:
   my-db:
   processing-db:
