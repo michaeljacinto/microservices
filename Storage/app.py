@@ -26,7 +26,7 @@ else:
     app_conf_file = "app_conf.yml"
     log_conf_file = "log_conf.yml"
 
-with open('app_conf.yml', 'r') as f:
+with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
 
 # External Logging Configuration
