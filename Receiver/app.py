@@ -101,32 +101,10 @@ def place_stock_buy_order(body):
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml",
+app.add_api("openapi.yaml", base_path="/receiver"
             strict_validation=True,
             validate_responses=True)
 
 
 if __name__ == "__main__":
-    # establish_kafka_connection()
-    # hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
-
-    # retry_count = 1
-    # # global topic
-
-    # while retry_count <= app_config["max_retries"]:
-
-    #     try:
-    #         logger.info(f'Attempting to connect to Kafka. Attempt {retry_count}..')
-    #         client = KafkaClient(hosts=hostname)
-    #         topic = client.topics[str.encode(app_config["events"]["topic"])]
-
-    #     except Exception as e:
-    #         logger.error(f'Connection failed. Unable to connect to Kafka..')
-    #         time.sleep(app_config["sleep_time"])
-    #         retry_count += 1
-
-    #     else:
-    #         logger.info("Connection to Kafka established.")
-    #         retry_count = app_config["max_retries"] + 1
-
     app.run(port=8080)

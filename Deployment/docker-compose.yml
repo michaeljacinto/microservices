@@ -48,7 +48,9 @@ services:
   receiver:
     image: receiver
     ports:
-      - "8080:8080"
+      - "8080"
+    networks:
+      - "api.network"
     environment:
       - TARGET_ENV=test
     volumes:
@@ -59,7 +61,9 @@ services:
   storage:
     image: storage
     ports:
-      - "8090:8090"
+      - "8090"
+    networks:
+      - "api.network"
     environment:
       - TARGET_ENV=test
     volumes:
@@ -78,7 +82,10 @@ services:
       - processing-db:/data
     depends_on:
       - "storage"
-    network_mode: "host"
+    ports:
+      - "8100"
+    networks:
+      - "api.network"
   audit:
     image: audit
     environment:
@@ -87,17 +94,37 @@ services:
       - /home/azureuser/config/audit:/config
       - /home/azureuser/logs:/logs
     ports:
-      - "8110:8110"
+      - "8110"
+    networks:
+      - "api.network"
     depends_on:
       - "kafka"
   dashboard:
     image: dashboard
     ports:
-      - "3000:3000"
+      - "3000"
+    networks:
+      - "api.network"
     depends_on:
       - "processing"
       - "audit"
+  nginx:
+    image: nginx:latest
+    volumes:
+      - /home/azureuser/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - "receiver"
+      - "processing"
+      - "audit"
+      - "dashboard"
+    ports:
+      - "80:80"
+    networks:
+      - "api.network"
 # Volumes
 volumes:
   my-db:
   processing-db:
+# Networks
+networks:configs:
+  api.network:
