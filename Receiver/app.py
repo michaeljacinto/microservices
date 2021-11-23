@@ -101,7 +101,7 @@ def place_stock_buy_order(body):
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml", base_path="/receiver"
+app.add_api("openapi.yaml", base_path="/receiver",
             strict_validation=True,
             validate_responses=True)
 
