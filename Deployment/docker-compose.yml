@@ -126,5 +126,5 @@ volumes:
   my-db:
   processing-db:
 # Networks
-networks:configs:
+networks:
   api.network:
